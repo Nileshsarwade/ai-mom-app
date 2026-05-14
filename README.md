@@ -97,3 +97,26 @@ ai-mom-app/
   cd server
   npm install
   node server.js
+
+
+## Day 2 Progress
+
+Day 2 focused on implementing browser-based microphone recording in the React frontend. The goal was to make audio capture work end-to-end before moving to backend upload and transcription. [web:115][web:296]
+
+### Completed on Day 2
+
+- Added microphone access using the browser media API
+- Implemented audio recording with `MediaRecorder`
+- Added Start Recording and Stop Recording controls
+- Generated a playable audio URL after recording stops
+- Added recorded audio playback in the UI
+- Applied basic styling using `App.css`
+
+### What Was Learned
+
+#### Browser Microphone Access
+
+The app now requests microphone permission from the browser using the media devices API.
+
+```js
+navigator.mediaDevices.getUserMedia({ audio: true });
