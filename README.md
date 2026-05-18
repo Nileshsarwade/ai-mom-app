@@ -78,6 +78,7 @@ Axios requests are asynchronous, which is important because recording, upload, t
     Express
     Node.js
     Axios
+    Multer
 
 ### Project Structure
 
@@ -120,3 +121,218 @@ The app now requests microphone permission from the browser using the media devi
 ```js
 navigator.mediaDevices.getUserMedia({ audio: true });
 ```
+
+# Day 3 Progress
+
+Day 3 focused on implementing the complete audio upload pipeline from the browser frontend to the Express backend.
+
+The goal was to move from temporary browser-only audio storage to real backend file storage.
+
+---
+
+## Completed on Day 3
+
+- Installed and configured Multer
+- Created uploads folder
+- Implemented backend audio upload route
+- Implemented multipart/form-data upload flow
+- Sent audio blob from frontend to backend
+- Uploaded audio using Axios POST requests
+- Saved uploaded audio files on the backend
+- Generated unique filenames for recordings
+- Configured Express static file serving
+- Improved Git workflow using `.gitignore`
+
+---
+
+# What Was Learned on Day 3
+
+## Why Audio Upload Was Needed
+
+Previously, recorded audio only existed in browser memory.
+
+```txt
+Browser memory
+↓
+Refresh page
+↓
+Audio lost
+```
+
+To support transcription and AI processing, audio needed to be uploaded and stored on the backend.
+
+---
+
+## FormData
+
+Files cannot be properly sent using normal JSON.
+
+`FormData` is used to send binary files over HTTP requests.
+
+Example:
+
+```js
+const formData = new FormData();
+
+formData.append("audio", audioBlob, "recording.webm");
+```
+
+---
+
+## Axios POST Request
+
+The frontend uploads audio using:
+
+```js
+await axios.post("http://localhost:3000/upload-audio", formData);
+```
+
+This sends the recorded audio to the backend.
+
+---
+
+## Multer Middleware
+
+Express cannot handle file uploads natively.
+
+Multer is used to:
+
+- receive uploaded files
+- process multipart/form-data
+- save files on disk
+- generate file metadata
+
+---
+
+## Multer Disk Storage
+
+```js
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + path.extname(file.originalname);
+
+    cb(null, uniqueName);
+  },
+});
+```
+
+This controls:
+
+- where files are saved
+- how filenames are generated
+
+---
+
+## Unique Filenames
+
+`Date.now()` is used to avoid overwriting previously uploaded recordings.
+
+Example:
+
+```txt
+1779091728166.webm
+```
+
+---
+
+## Backend Upload Route
+
+```js
+app.post("/upload-audio", upload.single("audio"), (req, res) => {
+  res.json({
+    message: "Audio uploaded successfully",
+    file: req.file.filename,
+  });
+});
+```
+
+This route:
+
+```txt
+receives audio
+↓
+saves file
+↓
+returns response
+```
+
+---
+
+## Express Static Files
+
+```js
+app.use("/uploads", express.static("uploads"));
+```
+
+This allows uploaded audio files to be publicly accessible.
+
+---
+
+## Complete Day 3 Workflow
+
+```txt
+Browser microphone
+↓
+MediaRecorder
+↓
+Audio Blob
+↓
+FormData
+↓
+Axios POST request
+↓
+Express backend
+↓
+Multer middleware
+↓
+uploads folder
+```
+
+---
+
+## Git Workflow Improvements
+
+Added:
+
+```txt
+server/uploads
+```
+
+inside `.gitignore` to prevent uploaded recordings from being committed to GitHub.
+
+---
+
+# Current Application Status
+
+The application can now:
+
+- record microphone audio
+- generate browser playback audio
+- upload recordings to the backend
+- store uploaded files
+- maintain a professional Git workflow
+
+---
+
+# Next Planned Feature
+
+## Day 4 Goal
+
+```txt
+Audio recording
+↓
+Speech-to-text transcription
+↓
+Transcript generation
+```
+
+Future integrations may include:
+
+- OpenAI Whisper
+- Deepgram
+- AssemblyAI
+- Google Speech-to-Text
