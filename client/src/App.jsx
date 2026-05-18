@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import "./App.css";
+import axios from "axios";
 
 function App() {
   const [isRecording, setIsRecording] = useState(false);
@@ -7,6 +8,23 @@ function App() {
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const streamRef = useRef(null);
+
+  const uploadAudio = async (audioBlob) => {
+    const formData = new FormData();
+
+    formData.append("audio", audioBlob, "recording.webm");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/upload-audio",
+        formData,
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -22,10 +40,11 @@ function App() {
       }
     };
 
-    mediaRecorder.onstop = () => {
+    mediaRecorder.onstop = async () => {
       const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
       const url = URL.createObjectURL(audioBlob);
       setAudioUrl(url);
+      await uploadAudio(audioBlob);
     };
 
     mediaRecorder.start();
