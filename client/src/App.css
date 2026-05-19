@@ -1,16 +1,232 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #111827 35%, #0f766e 100%);
+  min-height: 100vh;
+  color: #f8fafc;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
 .App {
-  margin-top: 200px;
+  width: 100%;
+  max-width: 760px;
+  padding: 34px 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
   text-align: center;
-  padding: 40px;
 }
 
-button {
-  padding: 12px 20px;
-  font-size: 16px;
+.badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  background: rgba(94, 234, 212, 0.14);
+  color: #99f6e4;
+  border: 1px solid rgba(153, 246, 228, 0.2);
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-size: 2.7rem;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  letter-spacing: -0.04em;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 520px;
+  margin: 0 auto 28px;
+  line-height: 1.7;
+}
+
+.action-area {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.main-btn {
+  border: none;
+  outline: none;
+  padding: 14px 26px;
+  min-width: 220px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
   cursor: pointer;
-  margin-top: 20px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.audio-box {
-  margin-top: 30px;
+.main-btn:hover {
+  transform: translateY(-2px);
+}
+
+.main-btn:active {
+  transform: translateY(0);
+}
+
+.main-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.main-btn:focus-visible {
+  outline: 3px solid #99f6e4;
+  outline-offset: 4px;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #14b8a6, #0f766e);
+  box-shadow: 0 14px 36px rgba(20, 184, 166, 0.35);
+}
+
+.stop-btn {
+  background: linear-gradient(135deg, #f43f5e, #be123c);
+  box-shadow: 0 14px 36px rgba(244, 63, 94, 0.35);
+}
+
+.status-row {
+  min-height: 34px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.recording {
+  background: rgba(244, 63, 94, 0.12);
+  color: #fecdd3;
+  border: 1px solid rgba(254, 205, 211, 0.14);
+}
+
+.uploading {
+  background: rgba(45, 212, 191, 0.12);
+  color: #ccfbf1;
+  border: 1px solid rgba(204, 251, 241, 0.14);
+}
+
+.audio-box,
+.transcript-box,
+.error-box {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: 22px;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.section-title,
+.transcript-box h3 {
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #ffffff;
+}
+
+audio {
+  width: 100%;
+  border-radius: 14px;
+  margin-top: 8px;
+}
+
+.transcript-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.transcript-box::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 4px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #5eead4, #14b8a6);
+}
+
+.transcript-box p {
+  padding-left: 14px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.error-box {
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(254, 205, 211, 0.14);
+}
+
+.error-box p {
+  color: #ffe4e6;
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 26px 18px;
+    border-radius: 22px;
+  }
+
+  h1 {
+    font-size: 2.1rem;
+  }
+
+  .subtitle {
+    font-size: 0.96rem;
+  }
+
+  .main-btn {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .audio-box,
+  .transcript-box,
+  .error-box {
+    padding: 18px;
+  }
 }
