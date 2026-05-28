@@ -10,6 +10,7 @@ function App() {
   const [error, setError] = useState("");
   const [momReply, setMomReply] = useState("");
   const [mom, setMom] = useState(null);
+  const [editableMom, setEditableMom] = useState(null);
 
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -32,7 +33,19 @@ function App() {
 
       console.log("Response:", response.data);
       setTranscript(response.data.transcript || "No transcript received.");
-      setMom(response.data.mom || null); // ← YE ADD KARO
+      const momData = response.data.mom || null;
+      setMom(momData);
+      setEditableMom(
+        momData
+          ? {
+              ...momData,
+              participants: [...momData.participants],
+              keyPoints: [...momData.keyPoints],
+              actionItems: [...momData.actionItems],
+              decisions: [...momData.decisions],
+            }
+          : null,
+      );
     } catch (error) {
       console.log(error);
       setError(
@@ -114,6 +127,33 @@ function App() {
 
     setIsRecording(false);
   };
+  // ---- Editable MOM Functions ----
+
+  // Simple field update (summary)
+  const updateField = (field, value) => {
+    setEditableMom((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // List item update
+  const updateListItem = (field, index, value) => {
+    const updated = [...editableMom[field]];
+    updated[index] = value;
+    setEditableMom((prev) => ({ ...prev, [field]: updated }));
+  };
+
+  // List item delete
+  const deleteListItem = (field, index) => {
+    const updated = editableMom[field].filter((_, i) => i !== index);
+    setEditableMom((prev) => ({ ...prev, [field]: updated }));
+  };
+
+  // List item add
+  const addListItem = (field) => {
+    setEditableMom((prev) => ({
+      ...prev,
+      [field]: [...prev[field], ""],
+    }));
+  };
 
   return (
     <div className="page">
@@ -173,44 +213,130 @@ function App() {
           </div>
         )}
 
-        {mom && (
+        {editableMom && (
           <div className="mom-box">
             <h3>📋 Minutes of Meeting</h3>
+
+            {/* Summary */}
             <div className="mom-section">
               <h4>📝 Summary</h4>
-              <p>{mom.summary}</p>
+              <textarea
+                className="edit-textarea"
+                value={editableMom.summary}
+                onChange={(e) => updateField("summary", e.target.value)}
+              />
             </div>
+
+            {/* Participants */}
             <div className="mom-section">
               <h4>👥 Participants</h4>
-              <ul>
-                {mom.participants.map((p, i) => (
-                  <li key={i}>{p}</li>
-                ))}
-              </ul>
+              {editableMom.participants.map((p, i) => (
+                <div className="edit-row" key={i}>
+                  <input
+                    className="edit-input"
+                    value={p}
+                    onChange={(e) =>
+                      updateListItem("participants", i, e.target.value)
+                    }
+                  />
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteListItem("participants", i)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button
+                className="add-btn"
+                onClick={() => addListItem("participants")}
+              >
+                + Add
+              </button>
             </div>
+
+            {/* Key Points */}
             <div className="mom-section">
               <h4>🔑 Key Points</h4>
-              <ul>
-                {mom.keyPoints.map((point, i) => (
-                  <li key={i}>{point}</li>
-                ))}
-              </ul>
+              {editableMom.keyPoints.map((point, i) => (
+                <div className="edit-row" key={i}>
+                  <input
+                    className="edit-input"
+                    value={point}
+                    onChange={(e) =>
+                      updateListItem("keyPoints", i, e.target.value)
+                    }
+                  />
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteListItem("keyPoints", i)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button
+                className="add-btn"
+                onClick={() => addListItem("keyPoints")}
+              >
+                + Add
+              </button>
             </div>
+
+            {/* Action Items */}
             <div className="mom-section">
               <h4>✅ Action Items</h4>
-              <ul>
-                {mom.actionItems.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
+              {editableMom.actionItems.map((item, i) => (
+                <div className="edit-row" key={i}>
+                  <input
+                    className="edit-input"
+                    value={item}
+                    onChange={(e) =>
+                      updateListItem("actionItems", i, e.target.value)
+                    }
+                  />
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteListItem("actionItems", i)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button
+                className="add-btn"
+                onClick={() => addListItem("actionItems")}
+              >
+                + Add
+              </button>
             </div>
+
+            {/* Decisions */}
             <div className="mom-section">
               <h4>🎯 Decisions Taken</h4>
-              <ul>
-                {mom.decisions.map((d, i) => (
-                  <li key={i}>{d}</li>
-                ))}
-              </ul>
+              {editableMom.decisions.map((d, i) => (
+                <div className="edit-row" key={i}>
+                  <input
+                    className="edit-input"
+                    value={d}
+                    onChange={(e) =>
+                      updateListItem("decisions", i, e.target.value)
+                    }
+                  />
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteListItem("decisions", i)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button
+                className="add-btn"
+                onClick={() => addListItem("decisions")}
+              >
+                + Add
+              </button>
             </div>
           </div>
         )}
