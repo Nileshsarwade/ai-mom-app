@@ -230,3 +230,51 @@ audio {
     padding: 18px;
   }
 }
+.mom-box {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+}
+
+.mom-box h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.mom-section {
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.mom-section h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #99f6e4;
+  margin-bottom: 8px;
+}
+
+.mom-section p {
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.7;
+}
+
+.mom-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.mom-section ul li {
+  color: rgba(255, 255, 255, 0.85);
+  padding: 4px 0;
+  padding-left: 12px;
+  border-left: 2px solid #14b8a6;
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
