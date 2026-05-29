@@ -227,6 +227,19 @@ systemSource.connect(destination);
 
 ---
 
+## 🔮 Future Improvements
+
+- [ ] Speaker diarization (who said what)
+- [ ] Real-time live captions during recording
+- [ ] Meeting history with database
+- [ ] Authentication system
+- [ ] Cloud storage for recordings
+- [ ] Timestamped transcripts
+- [ ] AI-generated action item assignments
+- [ ] Collaborative editing
+
+---
+
 ## 👤 Author
 
 Nilesh Sarwade
