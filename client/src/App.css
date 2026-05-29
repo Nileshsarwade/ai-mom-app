@@ -330,3 +330,34 @@ audio {
   font-size: 0.85rem;
   margin-top: 4px;
 }
+
+.export-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.export-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+}
+
+.pdf-btn {
+  background: linear-gradient(135deg, #f43f5e, #be123c);
+  color: white;
+}
+
+.docx-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}

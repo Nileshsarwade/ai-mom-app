@@ -1,6 +1,9 @@
 import { useState, useRef } from "react";
 import "./App.css";
 import axios from "axios";
+import jsPDF from "jspdf";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
+import { saveAs } from "file-saver";
 
 function App() {
   const [isRecording, setIsRecording] = useState(false);
@@ -154,6 +157,130 @@ function App() {
       [field]: [...prev[field], ""],
     }));
   };
+  // ---- Export PDF ----
+const exportPDF = () => {
+  const doc = new jsPDF();
+  let y = 20;
+
+  doc.setFontSize(18);
+  doc.text("Minutes of Meeting", 20, y);
+  y += 15;
+
+  doc.setFontSize(12);
+
+  // Summary
+  doc.setFont("helvetica", "bold");
+  doc.text("Summary:", 20, y);
+  y += 8;
+  doc.setFont("helvetica", "normal");
+  const summaryLines = doc.splitTextToSize(editableMom.summary, 170);
+  doc.text(summaryLines, 20, y);
+  y += summaryLines.length * 7 + 8;
+
+  // Participants
+  doc.setFont("helvetica", "bold");
+  doc.text("Participants:", 20, y);
+  y += 8;
+  doc.setFont("helvetica", "normal");
+  editableMom.participants.forEach((p) => {
+    doc.text(`• ${p}`, 25, y);
+    y += 7;
+  });
+  y += 5;
+
+  // Key Points
+  doc.setFont("helvetica", "bold");
+  doc.text("Key Discussion Points:", 20, y);
+  y += 8;
+  doc.setFont("helvetica", "normal");
+  editableMom.keyPoints.forEach((point) => {
+    doc.text(`• ${point}`, 25, y);
+    y += 7;
+  });
+  y += 5;
+
+  // Action Items
+  doc.setFont("helvetica", "bold");
+  doc.text("Action Items:", 20, y);
+  y += 8;
+  doc.setFont("helvetica", "normal");
+  if (editableMom.actionItems.length === 0) {
+    doc.text("• None", 25, y);
+    y += 7;
+  } else {
+    editableMom.actionItems.forEach((item) => {
+      doc.text(`• ${item}`, 25, y);
+      y += 7;
+    });
+  }
+  y += 5;
+
+  // Decisions
+  doc.setFont("helvetica", "bold");
+  doc.text("Decisions Taken:", 20, y);
+  y += 8;
+  doc.setFont("helvetica", "normal");
+  if (editableMom.decisions.length === 0) {
+    doc.text("• None", 25, y);
+  } else {
+    editableMom.decisions.forEach((d) => {
+      doc.text(`• ${d}`, 25, y);
+      y += 7;
+    });
+  }
+
+  doc.save("minutes-of-meeting.pdf");
+};
+
+// ---- Export DOCX ----
+const exportDOCX = async () => {
+  const doc = new Document({
+    sections: [
+      {
+        children: [
+          new Paragraph({
+            text: "Minutes of Meeting",
+            heading: HeadingLevel.HEADING_1,
+          }),
+
+          new Paragraph({ text: "Summary", heading: HeadingLevel.HEADING_2 }),
+          new Paragraph({ text: editableMom.summary }),
+
+          new Paragraph({ text: "" }),
+          new Paragraph({ text: "Participants", heading: HeadingLevel.HEADING_2 }),
+          ...editableMom.participants.map(
+            (p) => new Paragraph({ text: `• ${p}` })
+          ),
+
+          new Paragraph({ text: "" }),
+          new Paragraph({ text: "Key Discussion Points", heading: HeadingLevel.HEADING_2 }),
+          ...editableMom.keyPoints.map(
+            (point) => new Paragraph({ text: `• ${point}` })
+          ),
+
+          new Paragraph({ text: "" }),
+          new Paragraph({ text: "Action Items", heading: HeadingLevel.HEADING_2 }),
+          ...(editableMom.actionItems.length === 0
+            ? [new Paragraph({ text: "• None" })]
+            : editableMom.actionItems.map(
+                (item) => new Paragraph({ text: `• ${item}` })
+              )),
+
+          new Paragraph({ text: "" }),
+          new Paragraph({ text: "Decisions Taken", heading: HeadingLevel.HEADING_2 }),
+          ...(editableMom.decisions.length === 0
+            ? [new Paragraph({ text: "• None" })]
+            : editableMom.decisions.map(
+                (d) => new Paragraph({ text: `• ${d}` })
+              )),
+        ],
+      },
+    ],
+  });
+
+  const blob = await Packer.toBlob(doc);
+  saveAs(blob, "minutes-of-meeting.docx");
+};
 
   return (
     <div className="page">
@@ -339,7 +466,17 @@ function App() {
               </button>
             </div>
           </div>
+          
         )}
+        {/* Export Buttons */}
+    <div className="export-row">
+      <button className="export-btn pdf-btn" onClick={exportPDF}>
+        📄 Export PDF
+      </button>
+      <button className="export-btn docx-btn" onClick={exportDOCX}>
+        📝 Export DOCX
+      </button>
+    </div>
       </div>
     </div>
   );
